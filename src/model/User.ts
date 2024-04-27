@@ -14,7 +14,7 @@ const MessageSchema: Schema<Message>= new Schema ({
         type: String,
         required: true
     },
-    createAt:{
+    createdAt:{
         type: Date,
         required: true,
         default: Date.now()
@@ -30,6 +30,7 @@ export interface User extends Document {
     isAcceptingMessage: boolean;
     messages: Message[]
  }
+ // updating user schema
  const UserSchema: Schema<User>= new Schema ({
     username:{
         type: String,
@@ -41,7 +42,7 @@ export interface User extends Document {
         type: String,
         required: true,
         unique: true,
-        match: [^.+@.+\..+$ , "valid email is required"]
+        match: [/.+\@.+\..+/, 'Please use a valid email address'],
     },
     password:{
         type: String,
@@ -67,4 +68,5 @@ export interface User extends Document {
     
  
 })
-const UserModel =(mongoose.model.User as mongoose.Model<User>) || mongoose.cd model<User>("User",UserSchema)
+ const UserModel =(mongoose.model.User as mongoose.Model<User>) || mongoose.model<User>("User",UserSchema);
+ export default UserModel;
