@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs'
 import dbConnect from "@/lib/dbConnect";
 import UserModel from '@/model/User'
+import { NextResponse } from "next/server";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -43,7 +44,10 @@ export const authOptions: NextAuthOptions = {
                     }
                     return user
             } catch (error) {
-                
+                return NextResponse.json()({
+                    message:"This is a next-aut error",
+                    success:false
+                },{ status: 500})
             }
 
             }

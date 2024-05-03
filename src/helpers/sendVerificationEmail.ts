@@ -17,12 +17,15 @@ try {
         message: "Verification Email send successfully"
     
 } 
-} catch (emailError) {
+})
+    }
+ catch (emailError) {
     console.log("Error sending verification email",emailError)
     return {
         success: false,
         message: "failed to sending verification email"
     
 }
+ }
 }
-}
+

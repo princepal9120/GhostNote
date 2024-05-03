@@ -8,6 +8,14 @@ cosnt UsernameQuerySchema = z.object({
 })
 
 export async function GET(request:Request) {
+    // TODO: usethis in all other routes
+    //not require for updated nextjs
+    // if(request.method!=GET){
+    //     return Response.json({
+    //         success: false,
+    //         message:"Only GET method is allowed",
+    //     },{ status:400})
+    // }
     await dbConnect()
     try {
         const {searchParams}=new URL(request.url)
@@ -26,6 +34,7 @@ export async function GET(request:Request) {
                 "Invalid query parameters"
             },{ status:400})
         }
+        console.log("result data", result.data);
         const {username}=result.data
         const existingVerifiedUser =await UserModel.findOne({
             username, isVerified: true
