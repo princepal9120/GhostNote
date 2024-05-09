@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDebounceValue,useDebounceCallback } from 'usehooks-ts';
+import { useDebounceCallback } from 'usehooks-ts';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -68,6 +68,8 @@ export default function SignUpForm() {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
+      //check the video last part
+      //if error get
       const response = await axios.post<ApiResponse>('/api/sign-up', data);
 
       toast({
@@ -125,7 +127,7 @@ export default function SignUpForm() {
                   {!isCheckingUsername && usernameMessage && (
                     <p
                       className={`text-sm ${
-                        usernameMessage === 'Username is unique'
+                        usernameMessage === 'Username is Unique'
                           ? 'text-green-500'
                           : 'text-red-500'
                       }`}

@@ -3,7 +3,7 @@ import UserModel from '@/model/User';
 import { usernameValidation } from '@/schemas/signUpSchema';
 import { z } from 'zod';
 
-cosnt UsernameQuerySchema = z.object({
+const UsernameQuerySchema = z.object({
     username: usernameValidation
 })
 
@@ -20,7 +20,7 @@ export async function GET(request:Request) {
     try {
         const {searchParams}=new URL(request.url)
         const queryParam={
-            username: searchParams.get("username");
+            username: searchParams.get("username")
         }
         //vailidation with zod
         const result= UsernameQuerySchema.safeParse(queryParam)
@@ -42,7 +42,7 @@ export async function GET(request:Request) {
         if(existingVerifiedUser){
             return Response.json({
                 success: false,
-                message:"Username is already token",
+                message:"Username is already taken",
             },{ status:400})
         }
         return Response.json({
