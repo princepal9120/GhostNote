@@ -4,7 +4,7 @@ import { ApiResponse } from "@/types/ApiResponse"
 
 export async function sendVerificationEmail( email: string,
     username: string,
-    verifyCode: string) : Promise<ApiResponse>{
+    verifyCode: string) : Promise <ApiResponse>{
    
 try {
     await resend.emails.send({
@@ -12,12 +12,13 @@ try {
         to: email,
         subject: 'nextjs-freelance | verification code',
         react: VerificationEmail({ username, otp:verifyCode}),
+    })
     return {
         success: true,
         message: "Verification Email send successfully"
     
 } 
-})
+
     }
  catch (emailError) {
     console.log("Error sending verification email",emailError)

@@ -4,7 +4,7 @@ import "./globals.css";
 import AuthProvider from "../context/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
-import MessageCard from "@/components/MessageCard";
+import {MessageCard} from "@/components/MessageCard";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,8 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-     <Navbar/>
-     <MessageCard/>
+ 
           {children}
           <Toaster />
         </body>

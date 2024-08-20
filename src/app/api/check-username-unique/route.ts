@@ -8,7 +8,7 @@ const UsernameQuerySchema = z.object({
 })
 
 export async function GET(request:Request) {
-    // TODO: usethis in all other routes
+    // TODO: use this in all other routes  {update the nextjs , automatic idenitfy methods}
     //not require for updated nextjs
     // if(request.method!=GET){
     //     return Response.json({
@@ -24,7 +24,7 @@ export async function GET(request:Request) {
         }
         //vailidation with zod
         const result= UsernameQuerySchema.safeParse(queryParam)
-        console.log(result) //TODO REMOVE
+        console.log("check username",result) //TODO REMOVE
         if(!result.success){
             const usernameErrors=result.error.format().username?._errors 
             || []
