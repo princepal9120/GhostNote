@@ -1,57 +1,48 @@
-import UserModel from "@/model/User";
-import { authOptions } from "../auth/[...nextauth]/options";
-import { getServerSession } from "next-auth/next";
-import dbConnect from "@/lib/dbConnect";
-import { User} from 'next-auth'
-import mongoose from "mongoose";
+import dbConnect from '@/lib/dbConnect';
+import UserModel from '@/model/User';
+import mongoose from 'mongoose';
+import { User } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]/options';
 
-// the work of this route ,collect the all the message and serve to you
-//to serve the all the message , we use aggregation  pipelne mongodb which is advanced topic
-export async function GET(request: Request){
-    // connect to database, beacuae nextjs is a edge type server,
-    // so we frequently call every route database
-    await dbConnect()
-  
-    const session =await getServerSession(authOptions)
-    const user: User=session?.user as User
-    if(!session || !session .user){
-        return Response.json({
-            success:false,
-            message:"NOT authenticated"
+export async function GET(request: Request) {
+  await dbConnect();
+  const session = await getServerSession(authOptions);
+  const _user: User = session?.user;
 
-        },{ status:401  })
+  if (!session || !_user) {
+    return Response.json(
+      { success: false, message: 'Not authenticated' },
+      { status: 401 }
+    );
+  }
+  const userId = new mongoose.Types.ObjectId(_user._id);
+  try {
+    const user = await UserModel.aggregate([
+      { $match: { _id: userId } },
+      { $unwind: '$messages' },
+      { $sort: { 'messages.createdAt': -1 } },
+      { $group: { _id: '$_id', messages: { $push: '$messages' } } },
+    ]).exec();
+
+    if (!user || user.length === 0) {
+      return Response.json(
+        { message: 'User not found', success: false },
+        { status: 404 }
+      );
     }
-    const userId= new mongoose.Types.ObjectId(user._id)
-    // when we use the aggretion pipline the we use this syntax instead of
-    // const userId= user._id, bcz we send the string type here the other type
-    try {
-        const user=await UserModel.aggregate([
-            { $match: {id: userId}     },
-            {  $unwind: '$messages'},
-            {$sort:{ 'messages.createdAt':-1}},
-            {$group:{ _id:'$_id', messages:{
-               $push: '$messages' }}}
-        ])
-        if(!user || user.length===0){
-            return Response.json({
-                success:false,
-                message:"User not found"
-            },{ status: 401})
-        }
-        return Response.json({
-            success:false,
-            message:user[0].messages
-        },{ status: 200})
-    } catch (error:any) {
-        console.log("error adding get-messages",error);
-                return Response.json(
-            {
-                success: false,
-                message: "error checking get-messages"
-            },{
-                status:500
-            }
-        )    
-    }
- 
+
+    return Response.json(
+      { messages: user[0].messages },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+    return Response.json(
+      { message: 'Internal server error', success: false },
+      { status: 500 }
+    );
+  }
 }
